@@ -89,7 +89,6 @@
 }
 
 - (void)addMessageToAppropriateSection:(id <BORChatMessage>)message scrollToMessage:(BOOL)scrollToMessage {
-    __block CGSize size = self.collectionView.contentSize;
     [self.collectionView performBatchUpdates:^{
         if (!self.messagesBySections.count || [self shouldCreateSectionForMessage:message]) {
             [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:self.messagesBySections.count]];

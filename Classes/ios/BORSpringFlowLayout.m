@@ -40,15 +40,10 @@
     CGRect visibleRect = CGRectInset((CGRect) {.origin = self.collectionView.bounds.origin, .size = self.collectionView.frame.size}, -100, -100);
 
     NSArray *itemsInVisibleRectArray = [super layoutAttributesForElementsInRect:visibleRect];
-    for (UICollectionViewLayoutAttributes *item in itemsInVisibleRectArray) {
-//        if ([item.representedElementKind isEqualToString:UICollectionElementKindSectionHeader])
-//            item.indexPath = [NSIndexPath indexPathForItem:-1 inSection:item.indexPath.section];// since first row has same indexpath as section header
-    }
-    NSSet *itemsIndexPathsInVisibleRectSet = [NSSet setWithArray:[itemsInVisibleRectArray valueForKey:@"indexPath"]];
 
     // Step 1: Remove any behaviours that are no longer visible.
     NSArray *noLongerVisibleBehaviours = [self.dynamicAnimator.behaviors filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(UIAttachmentBehavior *behaviour, NSDictionary *bindings) {
-        UICollectionViewLayoutAttributes *item = [[behaviour items] firstObject];
+        UICollectionViewLayoutAttributes *item = (UICollectionViewLayoutAttributes*)[[behaviour items] firstObject];
         BOOL currentlyVisible = NO;
         for (UICollectionViewLayoutAttributes *attribute in itemsInVisibleRectArray) {
             if([attribute.indexPath isEqual:item.indexPath] && attribute.representedElementKind == item.representedElementKind)
@@ -59,7 +54,7 @@
 
     [noLongerVisibleBehaviours enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop) {
         [self.dynamicAnimator removeBehavior:obj];
-        UICollectionViewLayoutAttributes *item = [[obj items] firstObject];
+        UICollectionViewLayoutAttributes *item = (UICollectionViewLayoutAttributes*)[[obj items] firstObject];
         [self.visibleItems removeObject:item];
 //        NSLog(@"Deleted: %@, %@", item.representedElementKind,[item.indexPath description]);
     }];
@@ -89,7 +84,7 @@
 }
 
 - (void)configureSpringBehaviour:(UIAttachmentBehavior *)springBehaviour touchLocation:(CGPoint)touchLocation {
-    UICollectionViewLayoutAttributes *item = springBehaviour.items.lastObject;
+    UICollectionViewLayoutAttributes *item = (UICollectionViewLayoutAttributes*)springBehaviour.items.lastObject;
     CGPoint center = item.center;
     springBehaviour.length = 1.0f;
     springBehaviour.damping = 0.8f;
@@ -97,7 +92,7 @@
 
     // If our touchLocation is not (0,0), we'll need to adjust our item's center "in flight"
 //        if (!CGPointEqualToPoint(CGPointZero, touchLocation)) {
-    CGFloat distanceFromTouch = fabsf(touchLocation.y - springBehaviour.anchorPoint.y);
+    CGFloat distanceFromTouch = fabs(touchLocation.y - springBehaviour.anchorPoint.y);
     CGFloat scrollResistance = distanceFromTouch / 1500.0;
 
     if (self.latestDelta < 0) {
