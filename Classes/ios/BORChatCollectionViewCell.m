@@ -70,11 +70,6 @@ static NSCache *imageCache;
     return self;
 }
 
-- (void)awakeFromNib {
-
-
-}
-
 //- (void)setSelected:(BOOL)selected {
 //    [super setSelected:selected];
 //    [UIView animateWithDuration:0.33 animations:^{
